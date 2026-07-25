@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+/* ============================================
+   DESIGN TOKENS — Change these to restyle
+   the entire app instantly
+   ============================================ */
+
+:root {
+  /* Primary Colors */
+  --color-primary: #f97316;        /* Orange */
+  --color-primary-dark: #ea6c0a;   /* Darker orange for hover */
+  --color-primary-light: #fdba74;  /* Light orange for accents */
+
+  /* Slate Colors — main UI colors */
+  --color-bg: #f8fafc;             /* Page background */
+  --color-surface: #ffffff;        /* Card/panel background */
+  --color-surface-2: #f1f5f9;      /* Secondary surface */
+  --color-border: #e2e8f0;         /* Borders */
+  --color-border-strong: #cbd5e1;  /* Stronger borders */
+
+  /* Text Colors */
+  --color-text-primary: #0f172a;   /* Main text — almost black */
+  --color-text-secondary: #475569; /* Secondary text — slate */
+  --color-text-muted: #94a3b8;     /* Muted text — light slate */
+
+  /* Sidebar */
+  --sidebar-width: 260px;
+  --sidebar-bg: #3e5769;           /* Dark slate sidebar */
+  --sidebar-text: #cbd5e1;         /* Sidebar text */
+  --sidebar-active: #f97316;       /* Active item color */
+  --sidebar-hover: #1e293b;        /* Hover background */
+
+  /* Glassmorphism — Medium intensity */
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-blur: blur(12px);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+
+  /* Spacing Scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+
+  /* Animation */
+  --transition-slow: 0.4s ease;
+  --transition-med: 0.25s ease;
+  --transition-fast: 0.15s ease;
+
+  /* TopBar */
+  --topbar-height: 64px;
+}
+
+/* ============================================
+   BASE RESET & GLOBAL STYLES
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+/* ============================================
+   GLASSMORPHISM UTILITY CLASS
+   Apply this class to any card/panel
+   ============================================ */
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* ============================================
+   REUSABLE COMPONENT STYLES
+   ============================================ */
+
+/* Card — used everywhere for content panels */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-lg);
+}
+
+/* Primary Button */
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-slow);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-slow);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-secondary:hover {
+  background: var(--color-surface-2);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-success {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.badge-warning {
+  background: #fef9c3;
+  color: #ca8a04;
+}
+
+.badge-error {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.badge-info {
+  background: #dbeafe;
+  color: #2563eb;
+}
