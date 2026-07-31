@@ -28,11 +28,17 @@ def create_app() -> FastAPI:
 
     app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://vision-insight-2-0.vercel.app",
+        "https://*.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "*"
+    ],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
-    )
+)
 
     app.include_router(health_router, tags=["Health"])
     app.include_router(upload_router, prefix="/api", tags=["Video"])
