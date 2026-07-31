@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
@@ -10,10 +11,10 @@ from app.api.detection import router as detection_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create folders on startup
-    import os
+    # Create required folders on startup
     os.makedirs("uploads", exist_ok=True)
     os.makedirs("processed", exist_ok=True)
+    print("Folders created: uploads/ and processed/")
     await connect_db()
     yield
     await close_db()
@@ -26,19 +27,16 @@ def create_app() -> FastAPI:
         lifespan=lifespan
     )
 
+    # CORS — allows any origin to call this API
     app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "https://vision-insight-2-0.vercel.app",
-        "https://*.vercel.app",
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "*"
-    ],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+        allow_headers=["*"],
+        expose_headers=["*"],
+        max_age=3600,
+    )
 
     app.include_router(health_router, tags=["Health"])
     app.include_router(upload_router, prefix="/api", tags=["Video"])
@@ -46,7 +44,12 @@ def create_app() -> FastAPI:
 
     @app.get("/")
     async def root():
-        return {"message": "VisionInsight API", "docs": "/docs"}
+        return {
+            "message": "VisionInsight API",
+            "version": "1.0.0",
+            "docs": "/docs",
+            "health": "/health"
+        }
 
     return app
 

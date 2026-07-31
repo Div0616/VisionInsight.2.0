@@ -1,37 +1,39 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 from functools import lru_cache
+from typing import Optional
+
 
 class Settings(BaseSettings):
-    # App
     APP_NAME: str = "VisionInsight"
     APP_VERSION: str = "1.0.0"
-    DEBUG: bool = True
+    DEBUG: bool = False
 
     # MongoDB
     MONGODB_URI: str = "mongodb://localhost:27017"
     DATABASE_NAME: str = "visioninsight"
 
     # File Storage
-    UPLOAD_DIR: str = str(__import__('pathlib').Path(__file__).parent.parent.parent / "uploads")
-    PROCESSED_DIR: str = str(__import__('pathlib').Path(__file__).parent.parent.parent / "processed")
-    MAX_FILE_SIZE: int = 209715200  # 200MB in bytes
+    UPLOAD_DIR: str = "uploads"
+    PROCESSED_DIR: str = "processed"
+    MAX_FILE_SIZE: int = 209715200  # 200MB
 
     # CORS
-    FRONTEND_URL: str = "http://localhost:5173"
+    FRONTEND_URL: str = "*"
 
-    model_config = SettingsConfigDict(env_file=".env")
+    # Optional Cloudinary
+    CLOUDINARY_CLOUD_NAME: Optional[str] = None
+    CLOUDINARY_API_KEY: Optional[str] = None
+    CLOUDINARY_API_SECRET: Optional[str] = None
 
-    #cloudinary
-
-    CLOUDINARY_CLOUD_NAME: str = ""
-    CLOUDINARY_API_KEY: str = ""
-    CLOUDINARY_API_SECRET: str = ""
-
-
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+        extra = "ignore"
 
 
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
+
 
 settings = get_settings()
