@@ -1,11 +1,14 @@
 [phases.setup]
-nixPkgs = ["python311"]
+# libGL.so.1 is required by opencv-python; glib provides libglib-2.0
+nixPkgs = ["python311", "libGL", "glib"]
 
 [phases.install]
 cmds = [
   "python3 -m venv /app/venv",
   "/app/venv/bin/pip install --upgrade pip",
   "/app/venv/bin/pip install -r requirements.txt",
+  "/app/venv/bin/pip uninstall -y opencv-python || true",
+  "/app/venv/bin/pip install opencv-python-headless --upgrade",
   "chmod +x start.sh"
 ]
 
