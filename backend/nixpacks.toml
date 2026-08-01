@@ -5,8 +5,9 @@ nixPkgs = ["python311"]
 cmds = [
   "python3 -m venv /app/venv",
   "/app/venv/bin/pip install --upgrade pip",
-  "/app/venv/bin/pip install -r requirements.txt"
+  "/app/venv/bin/pip install -r requirements.txt",
+  "chmod +x start.sh"
 ]
 
 [start]
-cmd = "/app/venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port $PORT"
+cmd = "bash start.sh"
