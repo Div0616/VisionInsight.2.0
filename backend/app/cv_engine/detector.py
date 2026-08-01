@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 from app.core.config import settings
+import os
+os.environ["YOLO_VERBOSE"] = "False"
 
 class ObjectDetector:
     def __init__(self, model_name: str = "yolo11n.pt", confidence: float = 0.25):
