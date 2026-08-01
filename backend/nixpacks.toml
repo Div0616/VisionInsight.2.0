@@ -1,6 +1,6 @@
 [phases.setup]
 # libGL.so.1 is required by opencv-python; glib provides libglib-2.0
-nixPkgs = ["python311", "libGL", "glib"]
+nixPkgs = ["python311", "libGL", "glib", "curl"]
 
 [phases.install]
 cmds = [
@@ -9,7 +9,8 @@ cmds = [
   "/app/venv/bin/pip install -r requirements.txt",
   "/app/venv/bin/pip uninstall -y opencv-python || true",
   "/app/venv/bin/pip install opencv-python-headless --upgrade",
-  "chmod +x start.sh"
+  "chmod +x start.sh",
+  "curl -L -o /app/yolo11n.pt https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt"
 ]
 
 [start]

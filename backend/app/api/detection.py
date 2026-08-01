@@ -12,18 +12,30 @@ from app.cv_engine.detector import ObjectDetector
 router = APIRouter()
 
 # ============================================
-# SINGLE DETECTOR INSTANCE
-# Created once when server starts
-# Reused for every frame — avoids reloading
-# model on every request which would be slow
+# SINGLE DETECTOR INSTANCE — LAZY INITIALIZED
+# Created on first request, not at import time.
+# This prevents the server from crashing if the
+# model file path isn't resolved yet at startup.
 # ============================================
-detector = ObjectDetector(model_name="yolo11n.pt", confidence=0.25)
+_detector: Optional["ObjectDetector"] = None
+_detector_lock = threading.Lock()
 
-# ============================================
-# LIVE TRACKING STATE
-# Maintains tracking state across frames for
-# the live webcam/IP camera feed
-# ============================================
+
+def get_detector() -> "ObjectDetector":
+    """Return the shared detector, creating it on first call."""
+    global _detector
+    if _detector is None:
+        with _detector_lock:
+            if _detector is None:  # double-checked locking
+                _detector = ObjectDetector(model_name="yolo11n.pt", confidence=0.25)
+    return _detector
+
+
+# Keep module-level alias for backward compatibility with reset endpoint
+def _get_detector_direct():
+    return _detector
+
+
 live_seen_track_ids = set()   # All unique track IDs seen in current live session
 live_lock = threading.Lock()  # Thread safety for live state
 
@@ -123,7 +135,7 @@ async def detect_frame(request: FrameRequest):
         # STEP 2: Run YOLO tracking (not just detection)
         # Uses BoT-SORT for persistent track IDs
         # ============================================
-        result = detector.track_frame(frame)
+        result = get_detector().track_frame(frame)
         detections = result["detections"]
 
         # Update live tracking state
@@ -168,7 +180,9 @@ async def reset_tracking():
     global live_seen_track_ids
     with live_lock:
         live_seen_track_ids = set()
-    detector.reset_tracker()
+    d = _get_detector_direct()
+    if d is not None:
+        d.reset_tracker()
     return {"message": "Tracking state reset", "status": "ok"}
 
 

@@ -282,7 +282,8 @@ async def update_confidence(body: ConfidenceRequest):
     # Import the live singleton from detection.py.
     # This is the same detector used by /api/detect/frame so the
     # change takes effect immediately on the next frame processed.
-    from app.api.detection import detector as live_detector
+    from app.api.detection import get_detector
+    live_detector = get_detector()
     live_detector.confidence = round(body.confidence, 3)
 
     return {
@@ -311,10 +312,11 @@ async def update_model(body: ModelRequest):
             detail=f"model_name must be one of: {', '.join(ALLOWED_MODELS)}"
         )
 
-    from app.api.detection import detector as live_detector
+    from app.api.detection import get_detector
     from app.cv_engine.detector import ObjectDetector
     from ultralytics import YOLO
 
+    live_detector = get_detector()
     # Preserve the current confidence while swapping the model
     current_confidence = live_detector.confidence
 
